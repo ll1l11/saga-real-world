@@ -1,6 +1,7 @@
 /* eslint-disable no-constant-condition */
+import { push } from 'react-router-redux'
 import { take, put, call, fork, select, all } from 'redux-saga/effects'
-import { api, history } from '../services'
+import { api } from '../services'
 import * as actions from '../actions'
 import { getUser, getRepo, getStarredByUser, getStargazersByRepo } from '../reducers/selectors'
 
@@ -80,7 +81,7 @@ function* loadStargazers(fullName, loadMore) {
 function* watchNavigate() {
   while(true) {
     const {pathname} = yield take(actions.NAVIGATE)
-    yield history.push(pathname)
+    yield push(pathname)
   }
 }
 
