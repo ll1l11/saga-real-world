@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 
 import createHistory from 'history/createBrowserHistory'
 import { Route } from 'react-router-dom'
 import createSagaMiddleware, { END } from 'redux-saga'
+import logger from 'redux-logger'
 
 
 import App from './containers/App'
@@ -15,41 +16,42 @@ import RepoPage from './containers/RepoPage'
 import rootSaga from './sagas'
 
 
-import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux'
+import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import registerServiceWorker from './registerServiceWorker';
 
 import reducers from './reducers' // Or wherever you keep your reducers
+import rootReducer from './reducers';
 
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createHistory()
 
 // Build the middleware for intercepting and dispatching navigation actions
-const middleware = routerMiddleware(history)
+const rMiddleware = routerMiddleware(history)
 const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(
-  combineReducers({
-    ...reducers,
-    router: routerReducer
-  }),
-  applyMiddleware(middleware, sagaMiddleware)
+  rootReducer,
+  applyMiddleware(logger, rMiddleware, sagaMiddleware)
 )
 
 sagaMiddleware.run(rootSaga)
 store.close = () => store.dispatch(END)
-
-ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <div>
-        <Route path="/" component={App}>
+const a2 = (
+   <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <div>
+          <Route path='/' component={App} />
           <Route path="/:login" component={UserPage} />
           <Route path="/:login/:name" component={RepoPage} />
-        </Route>
-      </div>
-    </ConnectedRouter>
-  </Provider>,
+        </div>
+      </ConnectedRouter>
+    </Provider>
+)
+
+ReactDOM.render(
+  a2,
   document.getElementById('root')
-);
+)
+
 registerServiceWorker();

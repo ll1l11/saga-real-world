@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { navigate, updateRouterState, resetErrorMessage } from '../actions'
+import { updateRouterState, resetErrorMessage } from '../actions'
+import { push } from 'react-router-redux'
 import Explore from '../components/Explore'
 
 
@@ -33,7 +34,7 @@ class App extends Component {
   }
 
   handleChange(nextValue) {
-    this.props.navigate(`/${nextValue}`)
+    this.props.push(`/${nextValue}`)
   }
 
   renderErrorMessage() {
@@ -46,10 +47,10 @@ class App extends Component {
       <p style={{ backgroundColor: '#e99', padding: 10 }}>
         <b>{errorMessage}</b>
         {' '}
-        (<a href="#"
+        (<button
             onClick={this.handleDismissClick}>
           Dismiss
-        </a>)
+        </button>)
       </p>
     )
   }
@@ -72,7 +73,7 @@ App.propTypes = {
   // Injected by React Redux
   errorMessage: PropTypes.string,
   inputValue: PropTypes.string.isRequired,
-  navigate: PropTypes.func.isRequired,
+  // navigate: PropTypes.func.isRequired,
   updateRouterState: PropTypes.func.isRequired,
   resetErrorMessage: PropTypes.func.isRequired,
   // Injected by React Router
@@ -82,12 +83,12 @@ App.propTypes = {
 function mapStateToProps(state) {
   return {
     errorMessage: state.errorMessage,
-    inputValue: state.router.pathname.substring(1)
+    inputValue: state.router.location.pathname.substring(1)
   }
 }
 
 export default connect(mapStateToProps, {
-  navigate,
+  push,
   updateRouterState,
   resetErrorMessage
 })(App)

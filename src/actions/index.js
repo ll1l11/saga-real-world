@@ -15,7 +15,6 @@ export const STARRED = createRequestTypes('STARRED')
 export const STARGAZERS = createRequestTypes('STARGAZERS')
 
 export const UPDATE_ROUTER_STATE = 'UPDATE_ROUTER_STATE'
-export const NAVIGATE =  'NAVIGATE'
 export const LOAD_USER_PAGE = 'LOAD_USER_PAGE'
 export const LOAD_REPO_PAGE = 'LOAD_REPO_PAGE'
 export const LOAD_MORE_STARRED = 'LOAD_MORE_STARRED'
@@ -52,7 +51,6 @@ export const stargazers = {
 }
 
 export const updateRouterState = state => action(UPDATE_ROUTER_STATE, {state})
-export const navigate = pathname => action(NAVIGATE, {pathname})
 export const loadUserPage = (login, requiredFields = []) => action(LOAD_USER_PAGE, {login, requiredFields})
 export const loadRepoPage = (fullName, requiredFields = []) => action(LOAD_REPO_PAGE, {fullName, requiredFields})
 export const loadMoreStarred = login => action(LOAD_MORE_STARRED, {login})

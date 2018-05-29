@@ -25,7 +25,6 @@ class RepoPage extends Component {
   }
 
   handleLoadMoreClick() {
-    console.log('load more', this.props.loadMoreStargazers)
     this.props.loadMoreStargazers(this.props.fullName)
   }
 
@@ -69,8 +68,8 @@ RepoPage.propTypes = {
   loadMoreStargazers: PropTypes.func.isRequired
 }
 
-function mapStateToProps(state) {
-  const { login, name } = state.router.params
+function mapStateToProps(state, ownProps) {
+  const { login, name } = ownProps.match.params
   const {
     pagination: { stargazersByRepo },
     entities: { users, repos }

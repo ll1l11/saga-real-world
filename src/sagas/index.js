@@ -1,5 +1,4 @@
 /* eslint-disable no-constant-condition */
-import { push } from 'react-router-redux'
 import { take, put, call, fork, select, all } from 'redux-saga/effects'
 import { api } from '../services'
 import * as actions from '../actions'
@@ -24,10 +23,11 @@ const firstPageStargazersUrl = fullName => `repos/${fullName}/stargazers`
 function* fetchEntity(entity, apiFn, id, url) {
   yield put( entity.request(id) )
   const {response, error} = yield call(apiFn, url || id)
-  if(response)
+  if(response) {
     yield put( entity.success(id, response) )
-  else
+  } else {
     yield put( entity.failure(id, error) )
+  }
 }
 
 // yeah! we can also bind Generators
@@ -38,6 +38,7 @@ export const fetchStargazers = fetchEntity.bind(null, stargazers, api.fetchStarg
 
 // load user unless it is cached
 function* loadUser(login, requiredFields) {
+  const state = yield select()
   const user = yield select(getUser, login)
   if (!user || requiredFields.some(key => !user.hasOwnProperty(key))) {
     yield call(fetchUser, login)
@@ -77,14 +78,6 @@ function* loadStargazers(fullName, loadMore) {
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-// trigger router navigation via history
-function* watchNavigate() {
-  while(true) {
-    const {pathname} = yield take(actions.NAVIGATE)
-    yield push(pathname)
-  }
-}
-
 // Fetches data for a User : user data + starred repos
 function* watchLoadUserPage() {
   while(true) {
@@ -122,7 +115,6 @@ function* watchLoadMoreStargazers() {
 
 export default function* root() {
   yield all([
-    fork(watchNavigate),
     fork(watchLoadUserPage),
     fork(watchLoadRepoPage),
     fork(watchLoadMoreStarred),
